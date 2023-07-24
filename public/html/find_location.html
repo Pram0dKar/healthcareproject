@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <Title>
+       <b>Access Healthcare</b> 
+    </Title>
+    <link href="/css/healthcare.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="#" />
+</head>
+
+<body>
+    <script>
+    function handleClick(checkbox) {
+        if (checkbox.checked == true) {
+            checkbox.value = 'y';
+            console.log(checkbox.value + " ==>y");
+        }
+        else {
+            checkbox.value = 'n';
+            console.log(checkbox.value +  " ==>n");
+        }
+    }
+    async function validateForm() {
+        console.log('entered into validate form');
+        var variable1 = document.getElementById("srch_id").value;
+        const form = document.getElementById('search').value;
+        const zip_code = document.getElementById('srch_id').value;
+        const radius = document.getElementById('srch_radius').value;
+        const srch_emer = document.getElementById('srch_emer').value;
+        const srch_ped = document.getElementById('srch_ped').value;
+        const srch_prev = document.getElementById('srch_prev').value;
+        const srch_vacc = document.getElementById('srch_vacc').value;
+        const srch_dent = document.getElementById('srch_dent').value;
+        const srch_vis = document.getElementById('srch_vis').value;
+        const lat = document.getElementById('lat').value;
+        const lng = document.getElementById('lng').value;
+        const lat1 = document.getElementById('lat').value;
+        const lng1 = document.getElementById('lng').value;
+
+    
+
+        sessionStorage.setItem("zip_code",zip_code);
+        sessionStorage.setItem("radius",radius);
+        sessionStorage.setItem("srch_emer",srch_emer);
+        sessionStorage.setItem("srch_ped",srch_ped);
+        sessionStorage.setItem("srch_prev",srch_prev);
+        sessionStorage.setItem("srch_vacc",srch_vacc);
+        sessionStorage.setItem("srch_dent",srch_dent);
+        sessionStorage.setItem("srch_vis",srch_vis);
+        // sessionStorage.setItem("lat",lat);
+        // sessionStorage.setItem("lng",lng);
+
+      
+
+ 
+        console.log('zip_code=' + zip_code + ' typeof=' + typeof zip_code);
+        console.log('radius=' + radius + ' typeof=' + typeof radius);
+        console.log('srch_emer=' + srch_emer + ' typeof=' + typeof srch_emer);
+        console.log('srch_ped=' + srch_ped + ' typeof=' + typeof srch_ped);
+        console.log('srch_prev=' + srch_prev + ' typeof=' + typeof srch_prev);
+        console.log('srch_vacc=' + srch_vacc + ' typeof=' + typeof srch_vacc);
+        console.log('srch_dent=' + srch_dent + ' typeof=' + typeof srch_dent);
+        console.log('srch_vis=' + srch_vis + ' typeof=' + typeof srch_vis);
+
+      
+        
+        window.location.href = 'final_result.html';
+ 
+
+
+    }
+</script>
+    <form id="search" name="search" onsubmit="return validateForm()" method="get" action="final_result.html">
+        <div align="left">
+            <div class="lm_rect">
+                <h1>Access Healthcare</h1>
+            </div>
+            <div class="table_container">
+                <img src="/img/maps.png" alt="maps">
+                <div class="text-block">
+                    <table>
+                        <tr>
+                            <td>
+                                <b>Find a Resource</b>
+                            </td>    
+                
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Search Location</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id="srch_id" name="srch_id" type="text" size=50 required value="" 
+                                placeholder="Enter Zip code">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Enter Search Radius</b>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id="srch_radius" name="srch_radius" type="text" size="50" required value="" 
+                                placeholder="Enter Search Radius in Miles">
+
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td>
+                                <b> What care are you seeking?</b>
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td>
+                                <input id="srch_emer" name="srch_emer" type="checkbox" value="n" onclick='handleClick(this)'>
+                                <label for="srch_emer"> <b>Emergency</b></label><br>
+
+                            </td>
+                            <td>
+                                <input id="srch_ped" name="srch_ped" type="checkbox" value="n" onclick='handleClick(this)'>
+                                 <label for="srch_ped"> <b> Pediatric</b></label><br>
+
+                        
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id="srch_prev" name="srch_prev" type="checkbox" value="n" onclick='handleClick(this)'> 
+                                <label for="srch_prev"> <b>Preventative</b></label><br>
+
+                            </td>
+                            <td>
+                                <input id="srch_vacc" name="srch_vacc" type="checkbox" value="n" onclick='handleClick(this)'>
+                                 <label for="srch_vacc"> <b>Vaccination</b></label><br>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id="srch_dent" name="srch_dent" type="checkbox" value="n" onclick='handleClick(this)'>
+                                 <label for="srch_dent"> <b>Dental</b></label><br>
+
+                            </td>
+                            <td>
+                                <input id="srch_vis" name="srch_vis" type="checkbox" value="n" onclick='handleClick(this)'>
+                                 <label for="srch_vis"> <b>Vision</b></label><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input name="submit" type="submit" value="Submit">
+                            </td>
+                        </tr>
+                            
+                       
+                    </table>
+                </div>
+            </div>
+            <input type="hidden" id="lat" name="lat" value="0">
+            <input type="hidden" id="lng" name="lng" value="0">
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatiable" content="ie-edge">
+    <link href="/css/healthcare.css" rel="stylesheet" type="text/css" >
+    <title>Access Healthcare</title>
+  </head>
+
+  <body>
+    <div align="center">
+      <div class="rect">
+        <h1>Access Healthcare</h1>
+      </div>
+    </div>
+    <style>
+      #map {
+        height: 700px;
+        width: 100%;
+      }
+    </style>
+
+    <div id="map"></div>
+    </body>
+    <script type="text/javascript">
+      async function initMap() {
+        let result_for_marker = [];
+        let prep_marker={};
+        // var center_lat = sessionStorage.getItem('lat');
+        // var center_lng = sessionStorage.getItem('lng');
+        var zip_code = sessionStorage.getItem("zip_code");
+        var radius = sessionStorage.getItem("radius");
+        var srch_emer = sessionStorage.getItem("srch_emer");
+        var srch_ped = sessionStorage.getItem("srch_ped");
+        var srch_prev = sessionStorage.getItem("srch_prev");
+        var srch_vacc = sessionStorage.getItem("srch_vacc");
+        var srch_dent = sessionStorage.getItem("srch_dent");
+        var srch_vis = sessionStorage.getItem("srch_vis");
+        
+        // console.log('center_lat=' + center_lat + ' typeof=' + typeof center_lat);
+        // console.log('center_lng=' + center_lng + ' typeof=' + typeof center_lng);
+        // console.log('zip_code=' + zip_code + ' typeof=' + typeof zip_code);
+        // console.log('radius=' + radius + ' typeof=' + typeof radius);
+        // console.log('srch_emer=' + srch_emer + ' typeof=' + typeof srch_emer);
+        // console.log('srch_ped=' + srch_ped + ' typeof=' + typeof srch_ped);
+        // console.log('srch_prev=' + srch_prev + ' typeof=' + typeof srch_prev);
+        // console.log('srch_vacc=' + srch_vacc + ' typeof=' + typeof srch_vacc);
+        // console.log('srch_dent=' + srch_dent + ' typeof=' + typeof srch_dent);
+        // console.log('srch_vis=' + srch_vis + ' typeof=' + typeof srch_vis);
+
+
+        myMarker = [];
+        result_for_marker = await fetch_data();
+        result_for_marker = JSON.parse(JSON.stringify(result_for_marker));
+        if (result_for_marker.length == 0) {
+          console.log("No Records Found");
+          dummy_latlng = { lat: 40.78957, lng: -77.87446 };
+          mycontent = 'Penn State, State College, PA 16801'
+          var options = {
+            zoom: 8,
+            center: dummy_latlng,
+          };
+          prep_marker = {
+            coords: dummy_latlng,
+            content: mycontent,
+          };
+          myMarker.push(prep_marker);
+          alert("No Records Found, Displaying Penn State")
+        } else {
+          console.log('Records Found=' + result_for_marker.length);
+          for (i = 0; i < result_for_marker.length; i++) {
+            const res_rec = JSON.parse(result_for_marker[i]);
+
+            if (i == 0) {
+              var mycontent = res_rec.name + '<br>' +
+              res_rec.address + '<br>' +
+              res_rec.city + '<br>' +
+              res_rec.state + '<br>Tel: ' +
+              res_rec.telephone;
+
+              console.log('lat=' + parseFloat(res_rec.lattitude));
+              var options = {
+                zoom: 12,
+                center: {
+                  lat: parseFloat(res_rec.lattitude),
+                  lng: parseFloat(res_rec.longitude)
+                }
+              }
+              latlng = {
+                lat: parseFloat(res_rec.lattitude),
+                lng: parseFloat(res_rec.longitude)
+              };
+              console.log('latlng=' + latlng.lat + '  ' + latlng.lng);
+              console.log('content=' + mycontent);
+              prep_marker = {
+                coords:latlng,
+                content:mycontent
+              };
+              myMarker.push(prep_marker);
+              console.log('myMarker='+ myMarker.length)
+
+            } // i==0
+            else {
+                var mycontent = res_rec.name + '<br>' +
+              res_rec.address + '<br>' +
+              res_rec.city + '<br>' +
+              res_rec.state + '<br>Tel: ' +
+              res_rec.telephone;
+              var res_rec_lat = res_rec.lattitude;
+              latlng = {
+                lat: parseFloat(res_rec.lattitude),
+                lng: parseFloat(res_rec.longitude)
+              };
+              prep_marker = {
+                coords:latlng,
+                content:mycontent
+              };
+              myMarker.push(prep_marker);
+ 
+            } i > 0
+          } //for loop
+        } // else for rec found 
+        async function fetch_data() {
+            let result;
+            let final_result;
+            let final_array =[];
+            myresult= await fetch('../data/hospital.json') 
+            .then((response) => result = response.json())
+            .then((response) => {
+                Object.keys(response).forEach(k => {
+                let obj=response[k];
+                if (obj.zip == zip_code &&
+                   (obj.emergency == srch_emer ||
+                   obj.pediatric == srch_ped ||
+                   obj.dental == srch_dent ||
+                   obj.vaccination == srch_vacc ||
+                   obj.preventative == srch_prev ||
+                   obj.vision == srch_vis )
+                ) {
+                    final_result = JSON.stringify(obj)
+                    final_array.push(final_result)
+
+                }
+            })
+        });
+        return final_array;
+
+        } // fetch_data 
+        var map = new google.maps.Map(document.getElementById('map'), options);
+        for(var i=0;i<myMarker.length;i++) {
+          console.log('mymarker=' + myMarker.length);
+          console.log(myMarker[i]);
+          console.log(myMarker[i].coords);
+          console.log(myMarker[i].content);
+          
+            addMarker(myMarker[i]);
+        }
+        function addMarker(props) {
+          console.log('content='+ props.content);
+          console.log('coords=' + props.coords);
+          
+
+            var marker= new google.maps.Marker({
+                position:props.coords,
+                map:map,
+            });
+            if(props.iconImage)  {
+                marker.setIcon(props.iconImage);
+            }
+            var infoWindow;
+            if(props.content) {
+                infoWindow = new google.maps.InfoWindow({
+                    content:props.content
+                });
+            }
+           marker.addListener('click',function() {
+            infoWindow.open(map,marker);
+           });
+          }
+        
+        var mycircle = new google.maps.Circle({
+            center:myMarker[0].coords,
+            radius : 1000 * parseInt(radius),
+            strokeColor: "#0000FF",
+            strokeOpacity:0.6,
+            strokeWeight:2,
+            fillColor:"#0000FF",
+            fillOpacity:0.4
+        });
+        mycircle.setMap(map);
+        google.maps.event.addListener(map, 'click', function(event) {
+            addMarker({coords:event.latlng});
+
+        });
+      }  // initmap
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=<api>&callback=initMap">
+</script>
+</script>
+
+</html>
