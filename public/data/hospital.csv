@@ -1,4 +1,4 @@
-name,address,city,state,zip,telephone,type,county,lattitude,longitude,emergency,vaccination,dental,vision,pediatric,preventative
+name,address,city,state,zip,telephone,type,county,latitude,longitude,emergency,vaccination,dental,vision,pediatric,preventative
 HOUSTON METHODIST SAN JACINTO HOSPITAL ALEXANDER CAMPUS,1700 JAMES BOWIE DRIVE,BAYTOWN,TX,77520,(281) 420-8765,GENERAL ACUTE CARE,HARRIS,29.74762022,-94.94547682,y,y,y,y,y,y
 WOODS AT PARKSIDETHE,349 OLDE RIDENOUR ROAD,COLUMBUS,OH,43230,(614) 471-2552,SPECIAL,FRANKLIN,40.0271427,-82.88184334,y,y,y,y,y,y
 DAYTON CHILDREN'S HOSPITAL,ONE CHILDRENS PLAZA,DAYTON,OH,45404,(937) 641-3300,CHILDREN,MONTGOMERY,39.77424249,-84.16802733,y,y,y,y,y,n

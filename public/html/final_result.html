@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatiable" content="ie-edge">
     <link href="/css/healthcare.css" rel="stylesheet" type="text/css" >
@@ -12,12 +12,13 @@
     <div align="center">
       <div class="rect">
         <h1>Access Healthcare</h1>
+        <button id=button onclick="location.href='index.html'">Back to Home Page</button>
       </div>
     </div>
     <style>
       #map {
-        height: 700px;
-        width: 100%;
+        height: 800px;
+        width: 100%
       }
     </style>
 
@@ -27,8 +28,8 @@
       async function initMap() {
         let result_for_marker = [];
         let prep_marker={};
-        // var center_lat = sessionStorage.getItem('lat');
-        // var center_lng = sessionStorage.getItem('lng');
+        var center_lat = sessionStorage.getItem('lat');
+        var center_lng = sessionStorage.getItem('lng');
         var zip_code = sessionStorage.getItem("zip_code");
         var radius = sessionStorage.getItem("radius");
         var srch_emer = sessionStorage.getItem("srch_emer");
@@ -38,57 +39,81 @@
         var srch_dent = sessionStorage.getItem("srch_dent");
         var srch_vis = sessionStorage.getItem("srch_vis");
         
-        // console.log('center_lat=' + center_lat + ' typeof=' + typeof center_lat);
-        // console.log('center_lng=' + center_lng + ' typeof=' + typeof center_lng);
-        // console.log('zip_code=' + zip_code + ' typeof=' + typeof zip_code);
-        // console.log('radius=' + radius + ' typeof=' + typeof radius);
-        // console.log('srch_emer=' + srch_emer + ' typeof=' + typeof srch_emer);
-        // console.log('srch_ped=' + srch_ped + ' typeof=' + typeof srch_ped);
-        // console.log('srch_prev=' + srch_prev + ' typeof=' + typeof srch_prev);
-        // console.log('srch_vacc=' + srch_vacc + ' typeof=' + typeof srch_vacc);
-        // console.log('srch_dent=' + srch_dent + ' typeof=' + typeof srch_dent);
-        // console.log('srch_vis=' + srch_vis + ' typeof=' + typeof srch_vis);
+     //   console.log('center_lat=' + center_lat + ' typeof=' + typeof center_lat);
+     //   console.log('center_lng=' + center_lng + ' typeof=' + typeof center_lng);
+        console.log('zip_code=' + zip_code + ' typeof=' + typeof zip_code);
+        console.log('radius=' + radius + ' typeof=' + typeof radius);
+        console.log('srch_emer=' + srch_emer + ' typeof=' + typeof srch_emer);
+        console.log('srch_ped=' + srch_ped + ' typeof=' + typeof srch_ped);
+        console.log('srch_prev=' + srch_prev + ' typeof=' + typeof srch_prev);
+        console.log('srch_vacc=' + srch_vacc + ' typeof=' + typeof srch_vacc);
+        console.log('srch_dent=' + srch_dent + ' typeof=' + typeof srch_dent);
+        console.log('srch_vis=' + srch_vis + ' typeof=' + typeof srch_vis);
 
 
         myMarker = [];
         result_for_marker = await fetch_data();
         result_for_marker = JSON.parse(JSON.stringify(result_for_marker));
+        zoom_flag=0;
+
         if (result_for_marker.length == 0) {
           console.log("No Records Found");
-          dummy_latlng = { lat: 40.78957, lng: -77.87446 };
-          mycontent = 'Penn State, State College, PA 16801'
-          var options = {
-            zoom: 8,
-            center: dummy_latlng,
-          };
-          prep_marker = {
-            coords: dummy_latlng,
-            content: mycontent,
-          };
-          myMarker.push(prep_marker);
-          alert("No Records Found, Displaying Penn State")
+          alert("No Records Found, Back to Home Page")
+          location.replace("index.html")
         } else {
           console.log('Records Found=' + result_for_marker.length);
+          search_flag=[];
+
+          if (srch_emer=='y') search_flag.push('emer');
+          if (srch_ped=='y') search_flag.push('ped');
+          if (srch_prev=='y') search_flag.push('prev');
+          if (srch_vacc=='y') search_flag.push('vacc');
+          if (srch_vis=='y') search_flag.push('vis');
+          if (srch_dent=='y') search_flag.push('dent');
+
+          console.log('search_flag=' + search_flag);
+          show_record=0;
+
           for (i = 0; i < result_for_marker.length; i++) {
             const res_rec = JSON.parse(result_for_marker[i]);
+            show_flag=0;
+
+            console.log('entered into for loop for i and show_flag=' + show_flag)
+
+            for(k=0; k < search_flag.length; k++ ) {
+              if(res_rec.emergency == 'y' && search_flag[k] == 'emer') show_flag += 1;
+              if(res_rec.pediatric == 'y' && search_flag[k] == 'ped') show_flag += 1;
+              if(res_rec.preventative == 'y' && search_flag[k] == 'prev') show_flag += 1;
+              if(res_rec.vaccination == 'y' && search_flag[k] == 'vacc') show_flag += 1;
+              if(res_rec.dental == 'y' && search_flag[k] == 'dent') show_flag += 1;
+              if(res_rec.vision == 'y' && search_flag[k] == 'vis') show_flag += 1;
+            }
+
+            console.log('show_flag =' + show_flag + ' search_flag=' + search_flag.length);
+            if( show_flag == search_flag.length) {
+              show_record += 1;
+              
+            
 
             if (i == 0) {
               var mycontent = res_rec.name + '<br>' +
               res_rec.address + '<br>' +
               res_rec.city + '<br>' +
-              res_rec.state + '<br>Tel: ' +
+              res_rec.state + ' - ' + res_rec.zip + ' <br>Tel: ' +
               res_rec.telephone;
 
-              console.log('lat=' + parseFloat(res_rec.lattitude));
+              console.log('lat=' + parseFloat(res_rec.latitude));
               var options = {
                 zoom: 12,
                 center: {
-                  lat: parseFloat(res_rec.lattitude),
+                  lat: parseFloat(res_rec.latitude),
                   lng: parseFloat(res_rec.longitude)
                 }
+                
               }
+              zoom_flag += 1;
               latlng = {
-                lat: parseFloat(res_rec.lattitude),
+                lat: parseFloat(res_rec.latitude),
                 lng: parseFloat(res_rec.longitude)
               };
               console.log('latlng=' + latlng.lat + '  ' + latlng.lng);
@@ -105,11 +130,23 @@
                 var mycontent = res_rec.name + '<br>' +
               res_rec.address + '<br>' +
               res_rec.city + '<br>' +
-              res_rec.state + '<br>Tel: ' +
+              res_rec.state + ' - ' + res_rec.zip + ' <br>Tel: ' +
               res_rec.telephone;
-              var res_rec_lat = res_rec.lattitude;
+
+              if(zoom_flag ==0) {
+                var options = {
+                zoom: 12,
+                center: {
+                  lat: parseFloat(res_rec.latitude),
+                  lng: parseFloat(res_rec.longitude)
+                }
+                
+              }
+              zoom_flag += 1;
+              }
+              var res_rec_lat = res_rec.latitude;
               latlng = {
-                lat: parseFloat(res_rec.lattitude),
+                lat: parseFloat(res_rec.latitude),
                 lng: parseFloat(res_rec.longitude)
               };
               prep_marker = {
@@ -118,9 +155,16 @@
               };
               myMarker.push(prep_marker);
  
-            } i > 0
-          } //for loop
-        } // else for rec found 
+            } // i == 0
+          } // show flag
+        } // for loop
+      }  // else for res_rec.length
+
+      if(show_record == 0) {
+        console.log("No Records Found");
+          alert("No Records Found, Back to Home Page")
+          location.replace("index.html")
+      }
         async function fetch_data() {
             let result;
             let final_result;
@@ -130,14 +174,7 @@
             .then((response) => {
                 Object.keys(response).forEach(k => {
                 let obj=response[k];
-                if (obj.zip == zip_code &&
-                   (obj.emergency == srch_emer ||
-                   obj.pediatric == srch_ped ||
-                   obj.dental == srch_dent ||
-                   obj.vaccination == srch_vacc ||
-                   obj.preventative == srch_prev ||
-                   obj.vision == srch_vis )
-                ) {
+                if (obj.zip == zip_code ) {
                     final_result = JSON.stringify(obj)
                     final_array.push(final_result)
 
@@ -196,7 +233,8 @@
       }  // initmap
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=<api>&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=api&callback=initMap">
+    
 </script>
 </script>
 
