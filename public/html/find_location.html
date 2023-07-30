@@ -8,7 +8,7 @@
     <Title>
        <b>Access Healthcare</b> 
     </Title>
-    <link href="/css/healthcare.css" rel="stylesheet" type="text/css" />
+    <link href="../css/healthcare.css" rel="stylesheet" type="text/css" />
     <link rel="shortcut icon" href="#" />
 </head>
 
@@ -40,8 +40,29 @@
         const lng = document.getElementById('lng').value;
         const lat1 = document.getElementById('lat').value;
         const lng1 = document.getElementById('lng').value;
+        error_flag=0;
+        if (!check_number(radius)) {
+            msg="Please enter a valid number for Radius";
+            error_flag=1;
+        }
 
-    
+        if (!check_number(zip_code)) {
+            msg="Please enter a valid number for zip code";
+            error_flag=1;
+        }
+
+        if (srch_emer == "n" &&
+            srch_ped == "n" &&
+            srch_prev == "n" &&
+            srch_vacc == "n" &&
+            srch_dent == "n" &&
+            srch_vis == "n" 
+        ) {
+            error_flag=1;
+            msg="Please choose at least one care type";
+        }
+
+        if (error_flag == 0) {
 
         sessionStorage.setItem("zip_code",zip_code);
         sessionStorage.setItem("radius",radius);
@@ -54,10 +75,7 @@
         // sessionStorage.setItem("lat",lat);
         // sessionStorage.setItem("lng",lng);
 
-      
-
- 
-        console.log('zip_code=' + zip_code + ' typeof=' + typeof zip_code);
+         console.log('zip_code=' + zip_code + ' typeof=' + typeof zip_code);
         console.log('radius=' + radius + ' typeof=' + typeof radius);
         console.log('srch_emer=' + srch_emer + ' typeof=' + typeof srch_emer);
         console.log('srch_ped=' + srch_ped + ' typeof=' + typeof srch_ped);
@@ -66,12 +84,26 @@
         console.log('srch_dent=' + srch_dent + ' typeof=' + typeof srch_dent);
         console.log('srch_vis=' + srch_vis + ' typeof=' + typeof srch_vis);
 
-      
-        
         window.location.href = 'final_result.html';
- 
+        }
+        else {
 
+            //delete window.alert;
+            alert(msg);
+            throw new Error (msg);
+           
 
+            return false;
+        }
+    }
+    function check_number(val) {
+        console.log('value of val=' + val);
+
+        if (Number(val)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 </script>
     <form id="search" name="search" onsubmit="return validateForm()" method="get" action="final_result.html">
@@ -81,7 +113,7 @@
                 <button id=button onclick="location.href='index.html'">Back to Home Page</button>
             </div>
             <div class="table_container">
-                <img src="/img/maps.png" alt="maps">
+                <img src="../img/maps.png" alt="maps">
                 <div class="text-block">
                     <table>
                         <tr>
@@ -97,7 +129,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <input id="srch_id" name="srch_id" type="number" size=50 required value="" 
+                                <input id="srch_id" name="srch_id" type="text" size=50 required value=""  
                                 placeholder="Enter Zip code">
                             </td>
                         </tr>
@@ -109,7 +141,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <input id="srch_radius" name="srch_radius" type="number" size="50" required value="" 
+                                <input id="srch_radius" name="srch_radius" type="text" size="50" required value="" 
                                 placeholder="Enter Search Radius in Miles">
 
                             </td>
@@ -157,7 +189,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <input name="submit" type="submit" value="Submit">
+                                <input name="submit" type="button" value="Submit" onClick=validateForm()>
                             </td>
                         </tr>
                             
